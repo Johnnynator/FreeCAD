@@ -594,7 +594,7 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     SET(_boost_TEST_VERSIONS ${Boost_ADDITIONAL_VERSIONS})
 
     find_package(Boost ${BOOST_MIN_VERSION}
-        COMPONENTS filesystem program_options regex signals system thread REQUIRED)
+        COMPONENTS filesystem program_options regex system thread REQUIRED)
 
     if(UNIX AND NOT APPLE)
         # Boost.Thread 1.67+ headers reference pthread_condattr_*
@@ -1078,8 +1078,13 @@ ENDIF(CMAKE_SIZEOF_VOID_P EQUAL 8)
 
 IF(MSVC)
 	# set default compiler settings
+<<<<<<< HEAD
 	SET (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /EHa")
 	SET (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DFC_DEBUG /Zm128")
+=======
+	SET (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zm150")
+    SET (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DFC_DEBUG /Zm150 /bigobj")
+>>>>>>> f898eafd6... move from deprecated boost.signals to boost.signals2 library
 	# set default libs
 	SET (CMAKE_C_STANDARD_LIBRARIES "kernel32.lib user32.lib gdi32.lib winspool.lib SHFolder.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib winmm.lib comsupp.lib Ws2_32.lib dbghelp.lib ")
 	set (CMAKE_CXX_STANDARD_LIBRARIES "${CMAKE_C_STANDARD_LIBRARIES}")

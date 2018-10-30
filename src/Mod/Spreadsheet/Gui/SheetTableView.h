@@ -73,7 +73,7 @@ protected:
     QModelIndex currentEditIndex;
     Spreadsheet::Sheet * sheet;
 
-    boost::BOOST_SIGNALS_NAMESPACE::scoped_connection cellSpanChangedConnection;
+    boost::signals2::scoped_connection cellSpanChangedConnection;
 };
 
 }

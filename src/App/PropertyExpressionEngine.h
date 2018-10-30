@@ -25,7 +25,7 @@
 
 #include <boost/unordered/unordered_map.hpp>
 #include <boost/function.hpp>
-#include <boost/signals.hpp>
+#include <boost/signals2.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/topological_sort.hpp>
 #include <App/Property.h>
@@ -123,9 +123,9 @@ public:
     void slotObjectRenamed(const App::DocumentObject & obj);
 
     void slotObjectDeleted(const DocumentObject &obj);
-    
-    ///signal called when a expression was changed 
-    boost::signal<void (const App::ObjectIdentifier &)> expressionChanged; 
+
+    ///signal called when an expression was changed 
+    boost::signals2::signal<void (const App::ObjectIdentifier &)> expressionChanged;
 
     void onDocumentRestored();
 

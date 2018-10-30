@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Werner Mayer <wmayer[at]users.sourceforge.net>     *
+ *   Copyright (c) 2018 Stefan Tröger <stefantroeger@gmx.net>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,25 +21,24 @@
  ***************************************************************************/
 
 
-#ifndef APP_DOCUMENTOBSERVERPYTHON_H
-#define APP_DOCUMENTOBSERVERPYTHON_H
+#ifndef GUI_DOCUMENTOBSERVERPYTHON_H
+#define GUI_DOCUMENTOBSERVERPYTHON_H
 
 #include <CXX/Objects.hxx>
 
 #include <boost/signals2.hpp>
 #include <boost/bind.hpp>
 
-namespace App
+namespace Gui
 {
 
 /**
  * The DocumentObserverPython class is used to notify registered Python instances
  * whenever something happens to a document, like creation, destruction, adding or
- * removing objects or when property changes.
- *
- * @author Werner Mayer
- */
-class AppExport DocumentObserverPython
+ * removing viewproviders or when viewprovider property changes. This is the equivalent to the app 
+ * python document observer
+*/
+class GuiExport DocumentObserverPython
 {
 
 public:
@@ -50,25 +49,27 @@ public:
     static void addObserver(const Py::Object& obj);
     static void removeObserver(const Py::Object& obj);
 
-private:
+private:   
     /** Checks if a new document was created */
-    void slotCreatedDocument(const App::Document& Doc);
+    void slotCreatedDocument(const Gui::Document& Doc);
     /** Checks if the given document is about to be closed */
-    void slotDeletedDocument(const App::Document& Doc);
+    void slotDeletedDocument(const Gui::Document& Doc);
     /** Checks if the given document is relabeled */
-    void slotRelabelDocument(const App::Document& Doc);
+    void slotRelabelDocument(const Gui::Document& Doc);
+    /** Checks if the given document is renamed */
+    void slotRenameDocument(const Gui::Document& Doc);
     /** Checks if the given document is activated */
-    void slotActivateDocument(const App::Document& Doc);
+    void slotActivateDocument(const Gui::Document& Doc);
     /** Checks if a new object was added. */
-    void slotCreatedObject(const App::DocumentObject& Obj);
+    void slotCreatedObject(const Gui::ViewProvider& Obj);
     /** Checks if the given object is about to be removed. */
-    void slotDeletedObject(const App::DocumentObject& Obj);
+    void slotDeletedObject(const Gui::ViewProvider& Obj);
     /** The property of an observed object has changed */
-    void slotChangedObject(const App::DocumentObject& Obj, const App::Property& Prop);
-    /** Undoes the last transaction of the document */
-    void slotUndoDocument(const App::Document& Doc);
-    /** Redoes the last undone transaction of the document */
-    void slotRedoDocument(const App::Document& Doc);
+    void slotChangedObject(const Gui::ViewProvider& Obj, const App::Property& Prop);
+    /** The object was set into edit mode */
+    void slotInEdit(const Gui::ViewProviderDocumentObject& Obj);
+    /** The has left edit mode */
+    void slotResetEdit(const Gui::ViewProviderDocumentObject& Obj);
 
 private:
     Py::Object inst;
@@ -78,14 +79,15 @@ private:
     Connection connectApplicationCreatedDocument;
     Connection connectApplicationDeletedDocument;
     Connection connectApplicationRelabelDocument;
+    Connection connectApplicationRenameDocument;
     Connection connectApplicationActivateDocument;
-    Connection connectApplicationUndoDocument;
-    Connection connectApplicationRedoDocument;
     Connection connectDocumentCreatedObject;
     Connection connectDocumentDeletedObject;
     Connection connectDocumentChangedObject;
+    Connection connectDocumentObjectInEdit;
+    Connection connectDocumentObjectResetEdit;
 };
 
-} //namespace App
+} //namespace Gui
 
-#endif // APP_DOCUMENTOBSERVERPYTHON_H
+#endif // GUI_DOCUMENTOBSERVERPYTHON_H

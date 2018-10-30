@@ -118,7 +118,7 @@ protected:
     
     void onDeleteObject(const App::DocumentObject& obj);
 
-    typedef boost::BOOST_SIGNALS_NAMESPACE::connection Connection;
+    typedef boost::signals2::connection Connection;
     Connection connectDeletedObject;
 
 private:

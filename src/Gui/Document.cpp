@@ -31,7 +31,7 @@
 # include <QKeySequence>
 # include <qmessagebox.h>
 # include <qstatusbar.h>
-# include <boost/signals.hpp>
+# include <boost/signals2.hpp>
 # include <boost/bind.hpp>
 # include <Inventor/actions/SoSearchAction.h>
 # include <Inventor/nodes/SoSeparator.h>
@@ -89,7 +89,7 @@ struct DocumentP
     std::map<const App::DocumentObject*,ViewProviderDocumentObject*> _ViewProviderMap;
     std::map<std::string,ViewProvider*> _ViewProviderMapAnnotation;
 
-    typedef boost::signals::connection Connection;
+    typedef boost::signals2::connection Connection;
     Connection connectNewObject;
     Connection connectDelObject;
     Connection connectCngObject;
@@ -105,6 +105,8 @@ struct DocumentP
     Connection connectRedoDocument;
     Connection connectTransactionAppend;
     Connection connectTransactionRemove;
+    typedef boost::signals2::shared_connection_block ConnectionBlock;
+    ConnectionBlock connectActObjectBlocker;
 };
 
 } // namespace Gui
@@ -138,6 +140,8 @@ Document::Document(App::Document* pcDocument,Application * app)
         (boost::bind(&Gui::Document::slotRelabelObject, this, _1));
     d->connectActObject = pcDocument->signalActivatedObject.connect
         (boost::bind(&Gui::Document::slotActivatedObject, this, _1));
+    d->connectActObjectBlocker = boost::signals2::shared_connection_block
+        (d->connectActObject, false);
     d->connectSaveDocument = pcDocument->signalSaveDocument.connect
         (boost::bind(&Gui::Document::Save, this, _1));
     d->connectRestDocument = pcDocument->signalRestoreDocument.connect
@@ -846,14 +850,14 @@ void Document::slotStartRestoreDocument(const App::Document& doc)
     if (d->_pcDocument != &doc)
         return;
     // disable this signal while loading a document
-    d->connectActObject.block();
+    d->connectActObjectBlocker.block();
 }
 
 void Document::slotFinishRestoreDocument(const App::Document& doc)
 {
     if (d->_pcDocument != &doc)
         return;
-    d->connectActObject.unblock();
+    d->connectActObjectBlocker.unblock();
     App::DocumentObject* act = doc.getActiveObject();
     if (act) {
         ViewProvider* viewProvider = getViewProvider(act);

@@ -25,6 +25,7 @@
 #define PARTDESIGN_DATUMSHAPE_H
 
 #include <QString>
+#include <boost/signals2.hpp>
 #include <App/PropertyLinks.h>
 #include <Mod/Part/App/DatumFeature.h>
 
@@ -60,6 +61,13 @@ protected:
     virtual void handleChangedPropertyType(Base::XMLReader &reader, const char * TypeName, App::Property * prop);
     virtual short int mustExecute(void) const;
     virtual App::DocumentObjectExecReturn* execute(void);
+
+private:
+    void slotChangedObject(const App::DocumentObject& Obj, const App::Property& Prop);
+    virtual void onSettingDocument();
+
+    typedef boost::signals2::connection Connection;
+    Connection connectDocumentChangedObject;
 };
 
 } //namespace PartDesign
